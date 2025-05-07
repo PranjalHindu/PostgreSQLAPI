@@ -80,6 +80,15 @@ app.get('/department',async(req,res) =>{
         }
         });
 
+        app.get('/records',async(req,res) =>{
+            try{
+                const result = await pool.query('select e.employee_id, e.first_name,e.last_name,jh.start_date, j.job_id,j.job_title,d.department_id,d.department_name,l.location_id,city,postal_code,c.country_id,c.country_name from job_history jh left outer join employees e on jh.employee_id = e.employee_id  left outer join  jobs j on jh.job_id = j.job_id left outer join departments d on jh.department_id = d.department_id inner join locations l on d.location_id = l.location_id  inner join countries c on l.country_id = c.country_id limit 3');
+                res.json(result.rows);
+            }catch(err){
+                res.status(500).json({Error:err.message})
+            }
+            });
+
 
 
         app.get('/totalemp',async(req,res) =>{
