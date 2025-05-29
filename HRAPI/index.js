@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const pool = require('./db');
+const pool = require('./db'); // Your Postgres pool connection
 require('dotenv').config();
 
 const app = express();
@@ -8,170 +8,46 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', async (req, res) => {
-    try {
-        res.json('WELCOME to HR API')
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
-});
-
-app.get('/region', async (req, res) => {
-    try {
-        const result = await pool.query('select * from regions');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
-});
-
-
-app.get('/country', async (req, res) => {
-    try {
-        const result = await pool.query('select * from countries');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
-});
-
-
-app.get('/employee', async (req, res) => {
-    try {
-        const result = await pool.query('select count(employee_id) from employees ');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
-});
-
-
-app.get('/job', async (req, res) => {
-    try {
-        const result = await pool.query('select * from jobs');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
-});
-
-
-app.get('/department', async (req, res) => {
-    try {
-        const result = await pool.query('select * from departments');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
-});
-
-app.get('/locid', async (req, res) => {
-    try {
-        const result = await pool.query('select location_id from locations');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
-});
-
-
-app.get('/totalemp', async (req, res) => {
-    try {
-        const result = await pool.query('select count(employee_id) from employees');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
-});
-
-
-
-
-app.get('/totalcntry', async (req, res) => {
-    try {
-        const result = await pool.query('select count(country_id) from countries');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
-});
-
-
-
-app.get('/totalloc', async (req, res) => {
-    try {
-        const result = await pool.query('select count(location_id) from locations');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
-});
-
-
-
-
-app.get('/totaldep', async (req, res) => {
-    try {
-        const result = await pool.query('select count(department_id) from departments');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
-});
-
-
-app.get('/totaljob', async (req, res) => {
-    try {
-        const result = await pool.query('select count(job_id) from jobs');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
-});
-
-
-app.get('/totalreg', async (req, res) => {
-    try {
-        const result = await pool.query('select count(region_id) from regions');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
+  try {
+    res.json('WELCOME to Library Management API');
+  } catch (err) {
+    res.status(500).json({ Error: err.message });
+  }
 });
 
 app.get('/totalcounts', async (req, res) => {
-    try {
-        const employeeResult = await pool.query(`select count(employee_id) as total_employees from employees`);
-        const countriesResult = await pool.query(`select count(country_id) as total_countries from countries`);
-        const jobResult = await pool.query(`select count(job_id) as total_jobs from jobs`);
-        const deptResult = await pool.query(`select count(department_id) as total_departments from departments`);
-        const locationResult = await pool.query(`select count(location_id) as total_locations from locations`);
-        const regionResult = await pool.query(`select count(region_id) as total_regions from regions`);
-        const jobHistoryResult = await pool.query("SELECT COUNT(*) AS total_job_history FROM job_history");
+  try {
+    const usersResult = await pool.query(`SELECT COUNT(user_id) AS total_users FROM Users`);
+    const booksResult = await pool.query(`SELECT COUNT(book_id) AS total_books FROM Books`);
+    const categoriesResult = await pool.query(`SELECT COUNT(category_id) AS total_categories FROM Categories`);
+    const bookCategoriesResult = await pool.query(`SELECT COUNT(id) AS total_book_categories FROM Book_Categories`);
+    const borrowingsResult = await pool.query(`SELECT COUNT(borrowing_id) AS total_borrowings FROM Borrowings`);
+    const reservationsResult = await pool.query(`SELECT COUNT(reservation_id) AS total_reservations FROM Reservations`);
+    const staffResult = await pool.query(`SELECT COUNT(staff_id) AS total_staff FROM Staff`);
+    const finesResult = await pool.query(`SELECT COUNT(fine_id) AS total_fines FROM Fines`);
+    const feedbackResult = await pool.query(`SELECT COUNT(feedback_id) AS total_feedbacks FROM Feedback`);
+    const transactionsResult = await pool.query(`SELECT COUNT(transaction_id) AS total_transactions FROM Transactions`);
 
-         const counts = {
-            employees: employeeResult.rows[0].total_employees,
-            countries: countriesResult.rows[0].total_countries,
-            jobs: jobResult.rows[0].total_jobs,
-            dept: deptResult.rows[0].total_departments,
-            location: locationResult.rows[0].total_locations,
-            regions: regionResult.rows[0].total_regions,
-            job_history : jobHistoryResult.rows[0].total_job_history
-        };
-        res.json(counts);
+    const counts = {
+      users: usersResult.rows[0].total_users,
+      books: booksResult.rows[0].total_books,
+      categories: categoriesResult.rows[0].total_categories,
+      bookCategories: bookCategoriesResult.rows[0].total_book_categories,
+      borrowings: borrowingsResult.rows[0].total_borrowings,
+      reservations: reservationsResult.rows[0].total_reservations,
+      staff: staffResult.rows[0].total_staff,
+      fines: finesResult.rows[0].total_fines,
+      feedbackCount: feedbackResult.rows[0].total_feedbacks,
+      transactions: transactionsResult.rows[0].total_transactions
+    };
 
-    } catch (err) {
-        res.status(500).json({ Error: err.message })
-    }
+    res.json(counts);
+  } catch (err) {
+    res.status(500).json({ Error: err.message });
+  }
 });
-
-
-
-
-
-
-
 
 const PORT = process.env.PORT || 6005;
 app.listen(PORT, () => {
-    console.log(`Connected Successfully...on PORT ${PORT}`)
+  console.log(`Library Management API running on port ${PORT}`);
 });
