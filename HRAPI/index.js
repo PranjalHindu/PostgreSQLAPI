@@ -1,53 +1,138 @@
 const express = require('express');
 const cors = require('cors');
-const pool = require('./db'); // Your Postgres pool connection
+const pool = require('./db');
 require('dotenv').config();
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
+// Root test route
 app.get('/', async (req, res) => {
   try {
-    res.json('WELCOME to Library Management API');
+    const result = await pool.query('SELECT NOW()');
+    res.json({ serverTime: result.rows[0].now });
   } catch (err) {
-    res.status(500).json({ Error: err.message });
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
   }
 });
 
-app.get('/totalcounts', async (req, res) => {
+// 1. Get all Departments
+app.get('/departments', async (req, res) => {
   try {
-    const usersResult = await pool.query(`SELECT COUNT(user_id) AS total_users FROM Users`);
-    const booksResult = await pool.query(`SELECT COUNT(book_id) AS total_books FROM Books`);
-    const categoriesResult = await pool.query(`SELECT COUNT(category_id) AS total_categories FROM Categories`);
-    const bookCategoriesResult = await pool.query(`SELECT COUNT(id) AS total_book_categories FROM Book_Categories`);
-    const borrowingsResult = await pool.query(`SELECT COUNT(borrowing_id) AS total_borrowings FROM Borrowings`);
-    const reservationsResult = await pool.query(`SELECT COUNT(reservation_id) AS total_reservations FROM Reservations`);
-    const staffResult = await pool.query(`SELECT COUNT(staff_id) AS total_staff FROM Staff`);
-    const finesResult = await pool.query(`SELECT COUNT(fine_id) AS total_fines FROM Fines`);
-    const feedbackResult = await pool.query(`SELECT COUNT(feedback_id) AS total_feedbacks FROM Feedback`);
-    const transactionsResult = await pool.query(`SELECT COUNT(transaction_id) AS total_transactions FROM Transactions`);
-
-    const counts = {
-      users: usersResult.rows[0].total_users,
-      books: booksResult.rows[0].total_books,
-      categories: categoriesResult.rows[0].total_categories,
-      bookCategories: bookCategoriesResult.rows[0].total_book_categories,
-      borrowings: borrowingsResult.rows[0].total_borrowings,
-      reservations: reservationsResult.rows[0].total_reservations,
-      staff: staffResult.rows[0].total_staff,
-      fines: finesResult.rows[0].total_fines,
-      feedbackCount: feedbackResult.rows[0].total_feedbacks,
-      transactions: transactionsResult.rows[0].total_transactions
-    };
-
-    res.json(counts);
+    const result = await pool.query('SELECT * FROM Departments');
+    res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ Error: err.message });
+    console.error('Error fetching departments:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-const PORT = process.env.PORT || 6005;
+// 2. Get all Courses
+app.get('/courses', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM Courses');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching courses:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 3. Get all Subjects
+app.get('/subjects', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM Subjects');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching subjects:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 4. Get all Semesters
+app.get('/semesters', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM Semesters');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching semesters:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 5. Get all Students
+app.get('/students', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM Students');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching students:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 6. Get all Teachers
+app.get('/teachers', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM Teachers');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching teachers:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 7. Get all Grades
+app.get('/grades', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM Grades');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching grades:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 8. Get all Marks
+app.get('/marks', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM Marks');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching marks:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 9. Get all Classrooms
+app.get('/classrooms', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM Classrooms');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching classrooms:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 10. Get all Attendance
+app.get('/attendance', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM Attendance');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching attendance:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Library Management API running on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
